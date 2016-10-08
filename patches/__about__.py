@@ -1,0 +1,8 @@
+__title__ = 'patches'
+__package_name__ = 'patches'
+__description__ = 'catalog open source commits'
+__version__ = '0.1.0'
+__author__ = 'Tony Narlock'
+__email__ = 'tony@git-pull.com'
+__license__ = 'MIT'
+__copyright__ = 'Copyright 2016 Tony Narlock'
