@@ -10,3 +10,26 @@ patches
 
 """
 
+class Source(object):
+
+    def get_results(self):
+        pass
+
+
+
+class Entry(object):
+
+    raw_data = None
+
+
+class Patch(object):
+
+    def __str__(self):
+        return self._raw_data
+
+
+class Communique(object):
+
+    def __str__(self):
+
+        return self._raw_data
