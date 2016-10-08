@@ -17,11 +17,11 @@ class Result(object):
 
     pass
 
+
 class Source(object):
 
     def get_results(self) -> List[Result]:
         pass
-
 
 
 class Entry(object):
@@ -38,5 +38,4 @@ class Patch(Entry):
 class Communique(Entry):
 
     def __str__(self) -> str:
-
         return self.raw_data
