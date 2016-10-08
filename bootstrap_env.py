@@ -101,7 +101,7 @@ def main():
         virtualenv_bin = which('virtualenv', throw=False)
 
         subprocess.check_call(
-            [virtualenv_bin, env_dir]
+            [virtualenv_bin, '-p%s' % 'python3.5', env_dir]
         )
 
         subprocess.check_call(
