@@ -10,26 +10,33 @@ patches
 
 """
 
+from typing import List
+
+
+class Result(object):
+
+    pass
+
 class Source(object):
 
-    def get_results(self):
+    def get_results(self) -> List[Result]:
         pass
 
 
 
 class Entry(object):
 
-    raw_data = None
+    raw_data = None  # type: str
 
 
-class Patch(object):
+class Patch(Entry):
 
-    def __str__(self):
-        return self._raw_data
+    def __str__(self) -> str:
+        return self.raw_data
 
 
-class Communique(object):
+class Communique(Entry):
 
-    def __str__(self):
+    def __str__(self) -> str:
 
-        return self._raw_data
+        return self.raw_data
