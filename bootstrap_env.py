@@ -70,15 +70,15 @@ pip_bin = os.path.join(env_dir, 'bin', 'pip')
 python_bin = os.path.join(env_dir, 'bin', 'python')
 virtualenv_bin = which('virtualenv', throw=False)
 virtualenv_exists = os.path.exists(env_dir) and os.path.isfile(python_bin)
-sphinx_requirements_filepath = os.path.join(
-    project_dir, 'requirements', 'doc.txt')
-test_requirements_filepath = os.path.join(
-    project_dir, 'requirements', 'test.txt')
+entr_bin = which('entr', throw=False)
+nvim_bin = which('nvim', throw=False)
+dev_reqs_fpath = os.path.join(project_dir, 'requirements', 'dev.txt')
+test_reqs_fpath = os.path.join(project_dir, 'requirements', 'test.txt')
+test27_reqs_fpath = os.path.join(project_dir, 'requirements', 'test-py27.txt')
+sphinx_reqs_fpath = os.path.join(project_dir, 'requirements', 'doc.txt')
 
 
-try:
-    import virtualenv  # NOQA
-except ImportError:
+if not has_module('virtualenv'):
     message = (
         'Virtualenv is required for this bootstrap to run.\n'
         'Install virtualenv via:\n'
@@ -87,9 +87,7 @@ except ImportError:
     fail(message)
 
 
-try:
-    import pip  # NOQA
-except ImportError:
+if not has_module('pip'):
     message = (
         'pip is required for this bootstrap to run.\n'
         'Find instructions on how to install at: %s' %
@@ -99,14 +97,6 @@ except ImportError:
 
 
 def main():
-    if not which('entr', throw=False):
-        message = (
-            '\nentr(1) is used in this app as a cross platform file watcher.'
-            'You can install it via your package manager on most POSIX '
-            'systems. See the site at http://entrproject.org/\n'
-        )
-        print(message)
-
     if not virtualenv_exists:
         virtualenv_bin = which('virtualenv', throw=False)
 
@@ -118,14 +108,39 @@ def main():
             [pip_bin, 'install', '-e', project_dir]
         )
 
-    if not has_module('pytest'):
+    if not entr_bin:
+        message = (
+            'entr(1) is missing.\n'
+            'If you want to enable rebuilding documentation and '
+            're-running commands when a file is saved.\n'
+            'See https://bitbucket.org/eradman/entr/'
+        )
+        print(message)
+
+    # neovim requires this to be installed in the virtualenv 05/13/2016
+    if nvim_bin:
+        try:
+            import neovim  # noqa
+        except ImportError:
+            subprocess.check_call(
+                [pip_bin, 'install', 'neovim']
+            )
+
+    try:
+        import pytest  # noqa
+    except ImportError:
         subprocess.check_call(
-            [pip_bin, 'install', '-r', test_requirements_filepath]
+            [pip_bin, 'install', '-r', test_reqs_fpath]
+        )
+
+    if not os.path.isfile(os.path.join(env_dir, 'bin', 'flake8')):
+        subprocess.check_call(
+            [pip_bin, 'install', '-r', dev_reqs_fpath]
         )
 
     if not os.path.isfile(os.path.join(env_dir, 'bin', 'sphinx-quickstart')):
         subprocess.check_call(
-            [pip_bin, 'install', '-r', sphinx_requirements_filepath]
+            [pip_bin, 'install', '-r', sphinx_reqs_fpath]
         )
 
     if os.path.exists(os.path.join(env_dir, 'build')):
